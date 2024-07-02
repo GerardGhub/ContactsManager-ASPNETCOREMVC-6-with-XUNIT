@@ -1,2 +1,13 @@
 Add-Migration Initial
 Update-Database
+
+Summary
+ContactsManager.ControllerTests: Unit tests for controllers.
+ContactsManager.Core: Core domain logic.
+ContactsManager.Infrastructure: Infrastructure and data access code.
+ContactsManager.IntegrationTests: Integration tests for the application.
+ContactsManager.ServiceTests: Unit tests for services.
+ContactsManager.UI: The ASP.NET Core MVC project for the user interface.
+ContactsManagerSolution.sln: The solution file for the entire project.
+NOTES: A text document for notes or documentation.
+This folder structure separates concerns, making the project easi
