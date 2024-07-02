@@ -2,10 +2,10 @@
 
 namespace RepositoryContracts
 {
- /// <summary>
- /// Represents data access logic for managing Person entity
- /// </summary>
- public interface ICountriesRepository
+    /// <summary>
+    /// Represents data access logic for managing the Country entity.
+    /// </summary>
+    public interface ICountriesRepository
  {
   /// <summary>
   /// Adds a new country object to the data store
