@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ContactsManager.Core.DTO
 {
- public class LoginDTO
+    public class LoginDTO
  {
   [Required(ErrorMessage = "Email cant't be blank")]
   [EmailAddress(ErrorMessage = "Email should be in a proper email address format")]

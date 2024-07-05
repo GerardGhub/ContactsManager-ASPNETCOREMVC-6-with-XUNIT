@@ -1,13 +1,12 @@
-﻿using System;
-using Entities;
+﻿using Entities;
 using ServiceContracts.Enums;
 
 namespace ServiceContracts.DTO
 {
-  /// <summary>
-  /// Represents DTO class that is used as return type of most methods of Persons Service
-  /// </summary>
-  public class PersonResponse
+    /// <summary>
+    /// Represents DTO class that is used as return type of most methods of Persons Service
+    /// </summary>
+    public class PersonResponse
   {
     public Guid PersonID { get; set; }
     public string? PersonName { get; set; }

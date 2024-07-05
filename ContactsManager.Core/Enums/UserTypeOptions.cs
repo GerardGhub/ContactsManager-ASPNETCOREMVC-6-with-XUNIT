@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace ContactsManager.Core.Enums
+﻿namespace ContactsManager.Core.Enums
 {
- public enum UserTypeOptions
+    public enum UserTypeOptions
  {
   User, Admin
  }

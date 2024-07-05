@@ -1,12 +1,10 @@
 ﻿using ContactsManager.Core.Enums;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ContactsManager.Core.DTO
 {
- public class RegisterDTO
+    public class RegisterDTO
  {
   [Required(ErrorMessage = "Name can't be blank")]
   public string PersonName { get; set; }

@@ -1,12 +1,11 @@
 ﻿using ServiceContracts.DTO;
-using System.Threading.Tasks;
 
 namespace ServiceContracts
 {
- /// <summary>
- /// Represents business logic (retrieve) for manipulating Country entity
- /// </summary>
- public interface ICountriesGetterService
+    /// <summary>
+    /// Represents business logic (retrieve) for manipulating Country entity
+    /// </summary>
+    public interface ICountriesGetterService
  {
   /// <summary>
   /// Returns all countries from the list

@@ -1,13 +1,11 @@
-﻿using System;
-using ServiceContracts.DTO;
-using ServiceContracts.Enums;
+﻿using ServiceContracts.DTO;
 
 namespace ServiceContracts
 {
- /// <summary>
- /// Represents business logic (upload) for manipulating Perosn entity
- /// </summary>
- public interface IPersonsUpdaterService
+    /// <summary>
+    /// Represents business logic (upload) for manipulating Person entity
+    /// </summary>
+    public interface IPersonsUpdaterService
  {
   /// <summary>
   /// Updates the specified person details based on the given person ID

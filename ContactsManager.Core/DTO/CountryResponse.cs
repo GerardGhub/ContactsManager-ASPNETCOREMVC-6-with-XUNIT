@@ -1,19 +1,33 @@
-﻿using System;
-using Entities;
+﻿using Entities; // Assuming Entities namespace contains the Country class
 
 namespace ServiceContracts.DTO
 {
-  /// <summary>
-  /// DTO class that is used as return type for most of CountriesService methods
-  /// </summary>
-  public class CountryResponse
+    /// <summary>
+    /// Data Transfer Object (DTO) representing country information returned from CountryService methods.
+    /// </summary>
+    public class CountryResponse
   {
-    public Guid CountryID { get; set; }
-    public string? CountryName { get; set; }
+        /// <summary>
+        /// Unique identifier for the country.
+        /// </summary>
 
-    //It compares the current object to another object of CountryResponse type and returns true, if both values are same; otherwise returns false
-    public override bool Equals(object? obj)
+        public Guid CountryID { get; set; }
+
+        /// <summary>
+        /// Name of the country.
+        /// </summary>
+        public string? CountryName { get; set; }
+
+
+        /// <summary>
+        /// Compares the current CountryResponse object with another object to determine equality based on CountryID and CountryName.
+        /// </summary>
+        /// <param name="obj">The object to compare with.</param>
+        /// <returns>True if both objects are equal; otherwise, false.</returns>
+
+        public override bool Equals(object? obj)
     {
+                   // Check if the object is null or of a different type
       if (obj == null)
       {
         return false;
@@ -25,20 +39,32 @@ namespace ServiceContracts.DTO
       }
       CountryResponse country_to_compare = (CountryResponse)obj;
 
-      return CountryID == country_to_compare.CountryID && CountryName == country_to_compare.CountryName;
+            // Compare CountryID and CountryName for equality
+            return CountryID == country_to_compare.CountryID && CountryName == country_to_compare.CountryName;
     }
 
-    //returns an unique key for the current object
-    public override int GetHashCode()
+        /// <summary>
+        /// Computes a hash code for the current CountryResponse object.
+        /// </summary>
+        /// <returns>A hash code based on CountryID and CountryName.</returns>
+        public override int GetHashCode()
     {
       return base.GetHashCode();
     }
   }
 
-  public static class CountryExtensions
+    /// <summary>
+    /// Static class containing extension methods for converting between Entity.Country and DTO.CountryResponse objects.
+    /// </summary>
+
+    public static class CountryExtensions
   {
-    //Converts from Country object to CountryResponse object
-    public static CountryResponse ToCountryResponse(this Country country)
+        /// <summary>
+        /// Converts a Country object to a corresponding CountryResponse object.
+        /// </summary>
+        /// <param name="country">The Country object to convert.</param>
+        /// <returns>A new instance of CountryResponse initialized with the properties of the input Country object.</returns>
+        public static CountryResponse ToCountryResponse(this Country country)
     {
       return new CountryResponse() {  CountryID = country.CountryID, CountryName = country.CountryName };
     }

@@ -1,13 +1,11 @@
-﻿using System;
-using ServiceContracts.DTO;
-using ServiceContracts.Enums;
+﻿using ServiceContracts.DTO;
 
 namespace ServiceContracts
 {
- /// <summary>
- /// Represents business logic (retrieve) for manipulating Perosn entity
- /// </summary>
- public interface IPersonsGetterService
+    /// <summary>
+    /// Represents business logic (retrieve) for manipulating Person entity
+    /// </summary>
+    public interface IPersonsGetterService
  {
   /// <summary>
   /// Returns all persons
