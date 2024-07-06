@@ -1,52 +1,50 @@
-﻿using System;
-using Entities;
-using ServiceContracts.DTO;
+﻿using Entities;
 using ServiceContracts;
-using Services.Helpers;
-using ServiceContracts.Enums;
-using CsvHelper;
-using System.Globalization;
-using System.IO;
-using CsvHelper.Configuration;
-using OfficeOpenXml;
 using RepositoryContracts;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using SerilogTimings;
-using Exceptions;
 
 namespace Services
 {
- public class PersonsDeleterService : IPersonsDeleterService
+    public class PersonsDeleterService : IPersonsDeleterService
  {
-  //private field
-  private readonly IPersonsRepository _personsRepository;
-  private readonly ILogger<PersonsGetterService> _logger;
-  private readonly IDiagnosticContext _diagnosticContext;
+        // Private fields to hold references to the persons repository, logger, and diagnostic context
+        private readonly IPersonsRepository _personsRepository;
+        private readonly ILogger<PersonsGetterService> _logger;
+        private readonly IDiagnosticContext _diagnosticContext;
 
-  //constructor
-  public PersonsDeleterService(IPersonsRepository personsRepository, ILogger<PersonsGetterService> logger, IDiagnosticContext diagnosticContext)
-  {
-   _personsRepository = personsRepository;
-   _logger = logger;
-   _diagnosticContext = diagnosticContext;
-  }
+        // Constructor to initialize the service with dependencies
+        public PersonsDeleterService(IPersonsRepository personsRepository, ILogger<PersonsGetterService> logger, IDiagnosticContext diagnosticContext)
+        {
+         _personsRepository = personsRepository;
+         _logger = logger;
+         _diagnosticContext = diagnosticContext;
+        }
 
 
-  public async Task<bool> DeletePerson(Guid? personID)
-  {
-   if (personID == null)
-   {
-    throw new ArgumentNullException(nameof(personID));
-   }
+        // Method to delete a person by their ID
+        // Takes a nullable Guid representing the person's ID and returns a boolean indicating success
+        public async Task<bool> DeletePerson(Guid? personID)
+       {
+            // Check if the personID is null
+            // If it is null, throw an ArgumentNullException
+            if (personID == null)
+           {
+           throw new ArgumentNullException(nameof(personID));
+           }
 
-   Person? person = await _personsRepository.GetPersonByPersonID(personID.Value);
-   if (person == null)
-    return false;
+            // Retrieve the person entity from the repository by their ID
+            Person? person = await _personsRepository.GetPersonByPersonID(personID.Value);
 
-   await _personsRepository.DeletePersonByPersonID(personID.Value);
+            // If the person does not exist, return false indicating failure
+            if (person == null)
+            return false;
 
-   return true;
+            // Delete the person entity from the repository by their ID
+            await _personsRepository.DeletePersonByPersonID(personID.Value);
+
+            // Return true indicating the person was successfully deleted
+            return true;
   }
 
  }

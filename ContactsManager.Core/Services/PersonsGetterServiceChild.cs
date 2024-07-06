@@ -3,31 +3,36 @@ using OfficeOpenXml;
 using RepositoryContracts;
 using Serilog;
 using ServiceContracts.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
- public class PersonsGetterServiceChild : PersonsGetterService
+    // PersonsGetterServiceChild class inherits from PersonsGetterService
+    public class PersonsGetterServiceChild : PersonsGetterService
  {
-  public PersonsGetterServiceChild(IPersonsRepository personsRepository, ILogger<PersonsGetterService> logger, IDiagnosticContext diagnosticContext) : base(personsRepository, logger, diagnosticContext)
+
+        // Constructor to initialize the service with dependencies
+        // It calls the base class constructor with the provided parameters
+
+    public PersonsGetterServiceChild(IPersonsRepository personsRepository, ILogger<PersonsGetterService> logger, IDiagnosticContext diagnosticContext) : base(personsRepository, logger, diagnosticContext)
   {
   }
 
-  public async override Task<MemoryStream> GetPersonsExcel()
+
+        // Overriding the GetPersonsExcel method to customize the Excel export functionality
+   public async override Task<MemoryStream> GetPersonsExcel()
   {
+            // MemoryStream to hold the Excel data
    MemoryStream memoryStream = new MemoryStream();
    using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
    {
+                // Adding a worksheet to the Excel package and setting header values
     ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets.Add("PersonsSheet");
     workSheet.Cells["A1"].Value = "Person Name";
     workSheet.Cells["B1"].Value = "Age";
     workSheet.Cells["C1"].Value = "Gender";
 
-    using (ExcelRange headerCells = workSheet.Cells["A1:C1"])
+                // Styling the header
+     using (ExcelRange headerCells = workSheet.Cells["A1:C1"])
     {
      headerCells.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
      headerCells.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
@@ -35,14 +40,17 @@ namespace Services
     }
 
     int row = 2;
-    List<PersonResponse> persons = await GetAllPersons();
+                // Retrieve all persons and write each person to the worksheet
+                List<PersonResponse> persons = await GetAllPersons();
 
-    if (persons.Count == 0)
+                // Throw an exception if no persons data is found
+                if (persons.Count == 0)
     {
      throw new InvalidOperationException("No persons data");
     }
 
-    foreach (PersonResponse person in persons)
+                // Loop through each person and write their details to the worksheet
+     foreach (PersonResponse person in persons)
     {
      workSheet.Cells[row, 1].Value = person.PersonName;
      workSheet.Cells[row, 2].Value = person.Age;
@@ -51,12 +59,15 @@ namespace Services
      row++;
     }
 
-    workSheet.Cells[$"A1:C{row}"].AutoFitColumns();
+                // Autofit the columns to the content
+  workSheet.Cells[$"A1:C{row}"].AutoFitColumns();
 
-    await excelPackage.SaveAsync();
+                // Save the Excel package
+                await excelPackage.SaveAsync();
    }
 
-   memoryStream.Position = 0;
+            // Reset the memory stream position to the beginning
+            memoryStream.Position = 0;
    return memoryStream;
   }
  }

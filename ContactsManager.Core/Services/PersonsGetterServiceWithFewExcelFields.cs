@@ -1,53 +1,71 @@
 ﻿using OfficeOpenXml;
 using ServiceContracts;
 using ServiceContracts.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Services
 {
- public class PersonsGetterServiceWithFewExcelFields : IPersonsGetterService
- {
-  private readonly PersonsGetterService _personGetterService;
+    /// <summary>
+    /// Service class extending PersonsGetterService to provide Excel export functionality
+    /// with limited fields (Person Name, Age, Gender).
+    /// </summary>
 
-  public PersonsGetterServiceWithFewExcelFields(PersonsGetterService personsGetterService)
+    public class PersonsGetterServiceWithFewExcelFields : IPersonsGetterService
+ {
+  private readonly PersonsGetterService _personGetterService; // Instance of PersonsGetterService for delegated operations
+
+        /// <summary>
+        /// Constructor to initialize PersonsGetterServiceWithFewExcelFields with PersonsGetterService dependency.
+        /// </summary>
+        /// <param name="personsGetterService">Instance of PersonsGetterService for delegated operations.</param>
+
+    public PersonsGetterServiceWithFewExcelFields(PersonsGetterService personsGetterService)
   {
    _personGetterService = personsGetterService;
   }
 
+    /// <inheritdoc/>
   public async Task<List<PersonResponse>> GetAllPersons()
   {
    return await _personGetterService.GetAllPersons();
   }
 
+    /// <inheritdoc/>
   public async Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString)
   {
    return await _personGetterService.GetFilteredPersons(searchBy, searchString);
   }
 
-  public async Task<PersonResponse?> GetPersonByPersonID(Guid? personID)
+        /// <inheritdoc/>
+        public async Task<PersonResponse?> GetPersonByPersonID(Guid? personID)
   {
    return await _personGetterService.GetPersonByPersonID(personID);
   }
 
-  public async Task<MemoryStream> GetPersonsCSV()
+        /// <inheritdoc/>
+        public async Task<MemoryStream> GetPersonsCSV()
   {
    return await _personGetterService.GetPersonsCSV();
   }
 
+        /// <summary>
+        /// Generates an Excel file containing Person Name, Age, and Gender fields.
+        /// </summary>
+        /// <returns>MemoryStream containing the Excel file data.</returns>
+
   public async Task<MemoryStream> GetPersonsExcel()
   {
    MemoryStream memoryStream = new MemoryStream();
-   using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
+            // Create Excel package and worksheet
+            using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
    {
     ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets.Add("PersonsSheet");
-    workSheet.Cells["A1"].Value = "Person Name";
+                // Set headers for Person Name, Age, and Gender
+                workSheet.Cells["A1"].Value = "Person Name";
     workSheet.Cells["B1"].Value = "Age";
     workSheet.Cells["C1"].Value = "Gender";
 
-    using (ExcelRange headerCells = workSheet.Cells["A1:C1"])
+                // Style headers
+                using (ExcelRange headerCells = workSheet.Cells["A1:C1"])
     {
      headerCells.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
      headerCells.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
@@ -55,9 +73,11 @@ namespace Services
     }
 
     int row = 2;
-    List<PersonResponse> persons = await GetAllPersons();
 
-    foreach (PersonResponse person in persons)
+                //Fetch all Persons
+    List<PersonResponse> persons = await GetAllPersons();
+                // Populate Excel sheet with Person Name, Age, and Gender data
+                foreach (PersonResponse person in persons)
     {
      workSheet.Cells[row, 1].Value = person.PersonName;
      workSheet.Cells[row, 2].Value = person.Age;
@@ -65,13 +85,14 @@ namespace Services
 
      row++;
     }
+                // Autofit columns for better display
+                workSheet.Cells[$"A1:C{row}"].AutoFitColumns();
 
-    workSheet.Cells[$"A1:C{row}"].AutoFitColumns();
-
-    await excelPackage.SaveAsync();
+                // Save Excel package to MemoryStream and return it
+                await excelPackage.SaveAsync();
    }
-
-   memoryStream.Position = 0;
+            // Reset MemoryStream position to start
+            memoryStream.Position = 0;
    return memoryStream;
   }
  }

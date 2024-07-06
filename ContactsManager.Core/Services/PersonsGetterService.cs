@@ -1,71 +1,87 @@
-﻿using System;
+﻿// Using statements to import necessary namespaces and libraries
+// Entities: Contains the Person entity and related classes
 using Entities;
+// ServiceContracts: Contains the interfaces for services
 using ServiceContracts.DTO;
 using ServiceContracts;
-using Services.Helpers;
-using ServiceContracts.Enums;
+// CsvHelper: Library to handle CSV file operations
 using CsvHelper;
 using System.Globalization;
-using System.IO;
 using CsvHelper.Configuration;
+// OfficeOpenXml: Library to handle Excel file operations
 using OfficeOpenXml;
+// RepositoryContracts: Contains the interfaces for repositories
 using RepositoryContracts;
+// Microsoft.Extensions.Logging: Provides logging functionalities
 using Microsoft.Extensions.Logging;
+// Serilog: Logging library for structured logging
 using Serilog;
+// SerilogTimings: Provides timing functionalities for logging
 using SerilogTimings;
-using Exceptions;
 
 namespace Services
 {
- public class PersonsGetterService : IPersonsGetterService
+    public class PersonsGetterService : IPersonsGetterService
  {
-  //private field
-  private readonly IPersonsRepository _personsRepository;
-  private readonly ILogger<PersonsGetterService> _logger;
-  private readonly IDiagnosticContext _diagnosticContext;
+        // Private fields to hold references to the persons repository, logger, and diagnostic context
+        private readonly IPersonsRepository _personsRepository;
+        private readonly ILogger<PersonsGetterService> _logger;
+        private readonly IDiagnosticContext _diagnosticContext;
 
-  //constructor
-  public PersonsGetterService(IPersonsRepository personsRepository, ILogger<PersonsGetterService> logger, IDiagnosticContext diagnosticContext)
-  {
-   _personsRepository = personsRepository;
-   _logger = logger;
-   _diagnosticContext = diagnosticContext;
-  }
+        // Constructor to initialize the service with dependencies
+        public PersonsGetterService(IPersonsRepository personsRepository, ILogger<PersonsGetterService> logger, IDiagnosticContext diagnosticContext)
+       {
+        _personsRepository = personsRepository;
+        _logger = logger;
+        _diagnosticContext = diagnosticContext;
+        }
 
-  public virtual async Task<List<PersonResponse>> GetAllPersons()
-  {
-   _logger.LogInformation("GetAllPersons of PersonsService");
+        // Method to get all persons
+        // Returns a list of PersonResponse objects
+        public virtual async Task<List<PersonResponse>> GetAllPersons()
+       {
+        _logger.LogInformation("GetAllPersons of PersonsService");
 
-   var persons = await _personsRepository.GetAllPersons();
+            // Retrieve all persons from the repository
+            var persons = await _personsRepository.GetAllPersons();
 
-   return persons
-     .Select(temp => temp.ToPersonResponse()).ToList();
-  }
-
-
-  public virtual async Task<PersonResponse?> GetPersonByPersonID(Guid? personID)
-  {
-   if (personID == null)
-    return null;
-
-   Person? person = await _personsRepository.GetPersonByPersonID(personID.Value);
-
-   if (person == null)
-    return null;
-
-   return person.ToPersonResponse();
+            // Convert each Person entity to a PersonResponse DTO and return as a list
+            return persons.Select(temp => temp.ToPersonResponse()).ToList();
   }
 
 
-  public virtual async Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString)
+        // Method to get a person by their ID
+        // Takes a nullable Guid representing the person's ID and returns a PersonResponse object
+
+        public virtual async Task<PersonResponse?> GetPersonByPersonID(Guid? personID)
+       {
+        if (personID == null)
+           return null;
+
+            // Retrieve the person entity from the repository by their ID
+            Person? person = await _personsRepository.GetPersonByPersonID(personID.Value);
+
+       if (person == null)
+           return null;
+
+            // Convert the Person entity to a PersonResponse DTO
+            return person.ToPersonResponse();
+  }
+
+
+        // Method to get filtered persons based on search criteria
+        // Takes the search field and search string, returns a list of PersonResponse objects
+   public virtual async Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString)
   {
    _logger.LogInformation("GetFilteredPersons of PersonsService");
 
    List<Person> persons;
 
-   using (Operation.Time("Time for Filtered Persons from Database"))
+    // Measure the time taken for the filtering operation using SerilogTimings
+    using (Operation.Time("Time for Filtered Persons from Database"))
    {
-    persons = searchBy switch
+                // Use switch expression to filter persons based on the search criteria
+     persons = searchBy switch
     {
      nameof(PersonResponse.PersonName) =>
       await _personsRepository.GetFilteredPersons(temp =>
@@ -96,21 +112,27 @@ namespace Services
     };
    } //end of "using block" of serilog timings
 
-   _diagnosticContext.Set("Persons", persons);
+            // Set diagnostic context with the persons data
+            _diagnosticContext.Set("Persons", persons);
 
-   return persons.Select(temp => temp.ToPersonResponse()).ToList();
+            // Convert each Person entity to a PersonResponse DTO and return as a list
+            return persons.Select(temp => temp.ToPersonResponse()).ToList();
   }
 
 
-  public virtual async Task<MemoryStream> GetPersonsCSV()
+        // Method to get all persons in CSV format
+        // Returns a MemoryStream containing the CSV data
+   public virtual async Task<MemoryStream> GetPersonsCSV()
   {
    MemoryStream memoryStream = new MemoryStream();
    StreamWriter streamWriter = new StreamWriter(memoryStream);
 
+            // Configure the CSV writer with the appropriate culture information
    CsvConfiguration csvConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture);
    CsvWriter csvWriter = new CsvWriter(streamWriter, csvConfiguration);
 
-   //PersonName,Email,DateOfBirth,Age,Gender,Country,Address,ReceiveNewsLetters
+            // Write the CSV header fields
+            //PersonName,Email,DateOfBirth,Age,Gender,Country,Address,ReceiveNewsLetters
    csvWriter.WriteField(nameof(PersonResponse.PersonName));
    csvWriter.WriteField(nameof(PersonResponse.Email));
    csvWriter.WriteField(nameof(PersonResponse.DateOfBirth));
@@ -120,6 +142,7 @@ namespace Services
    csvWriter.WriteField(nameof(PersonResponse.ReceiveNewsLetters));
    csvWriter.NextRecord();
 
+            // Retrieve all persons and write each person to the CSV
    List<PersonResponse> persons = await GetAllPersons();
 
    foreach (PersonResponse person in persons)
@@ -138,15 +161,20 @@ namespace Services
     csvWriter.Flush();
    }
 
-   memoryStream.Position = 0;
+            // Reset the memory stream position to the beginning
+            memoryStream.Position = 0;
    return memoryStream;
   }
 
-  public virtual async Task<MemoryStream> GetPersonsExcel()
+
+        // Method to get all persons in Excel format
+        // Returns a MemoryStream containing the Excel data
+   public virtual async Task<MemoryStream> GetPersonsExcel()
   {
    MemoryStream memoryStream = new MemoryStream();
    using (ExcelPackage excelPackage = new ExcelPackage(memoryStream))
    {
+                // Create a worksheet and set the header values
     ExcelWorksheet workSheet = excelPackage.Workbook.Worksheets.Add("PersonsSheet");
     workSheet.Cells["A1"].Value = "Person Name";
     workSheet.Cells["B1"].Value = "Email";
@@ -157,13 +185,15 @@ namespace Services
     workSheet.Cells["G1"].Value = "Address";
     workSheet.Cells["H1"].Value = "Receive News Letters";
 
-    using (ExcelRange headerCells = workSheet.Cells["A1:H1"])
+                // Style the header
+     using (ExcelRange headerCells = workSheet.Cells["A1:H1"])
     {
      headerCells.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
      headerCells.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
      headerCells.Style.Font.Bold = true;
     }
 
+                // Retrieve all persons and write each person to the worksheet
     int row = 2;
     List<PersonResponse> persons = await GetAllPersons();
 
@@ -182,12 +212,15 @@ namespace Services
      row++;
     }
 
-    workSheet.Cells[$"A1:H{row}"].AutoFitColumns();
+                // Autofit the columns to the content
+                workSheet.Cells[$"A1:H{row}"].AutoFitColumns();
 
-    await excelPackage.SaveAsync();
+                // Save the Excel package
+                await excelPackage.SaveAsync();
    }
 
-   memoryStream.Position = 0;
+            // Reset the memory stream position to the beginning
+            memoryStream.Position = 0;
    return memoryStream;
   }
  }
