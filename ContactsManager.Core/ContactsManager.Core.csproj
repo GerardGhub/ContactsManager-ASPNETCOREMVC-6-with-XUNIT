@@ -1,20 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+	  <!-- Targeting .NET 6.0 framework -->
     <TargetFramework>net6.0</TargetFramework>
+	  <!-- Enabling implicit using directives for commonly used namespaces -->
     <ImplicitUsings>enable</ImplicitUsings>
+	  <!-- Enabling nullable reference types for better null safety -->
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+	  <!-- CSV Helper library for reading and writing CSV files -->
     <PackageReference Include="CsvHelper" Version="28.0.1" />
+	  <!-- EPPlus library for creating and manipulating Excel files -->
     <PackageReference Include="EPPlus" Version="6.0.8" />
+	  <!-- ASP.NET Core Identity for user authentication and authorization -->
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+	  <!-- ASP.NET Core Identity Entity Framework Core integration -->
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.9" />
+	  <!-- ASP.NET Core MVC Data Annotations for validation attributes -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
+	  <!-- ASP.NET Core MVC View Features for view-related features -->
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+	  <!-- Serilog for structured logging -->
     <PackageReference Include="Serilog" Version="2.12.0" />
+	  <!-- Serilog extensions for ASP.NET Core hosting integration -->
     <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
+	  <!-- Serilog Timings for measuring and logging operation durations -->
     <PackageReference Include="SerilogTimings" Version="3.0.1" />
   </ItemGroup>
 

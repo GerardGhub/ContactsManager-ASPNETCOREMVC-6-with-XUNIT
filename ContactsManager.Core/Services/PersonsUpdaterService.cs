@@ -40,7 +40,7 @@ namespace Services
     throw new InvalidPersonIDException("Given person id doesn't exist");
    }
 
-   //update all details
+   // Update all details
    matchingPerson.PersonName = personUpdateRequest.PersonName;
    matchingPerson.Email = personUpdateRequest.Email;
    matchingPerson.DateOfBirth = personUpdateRequest.DateOfBirth;

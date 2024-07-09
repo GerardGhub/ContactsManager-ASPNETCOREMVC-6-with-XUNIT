@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Entities;
 using RepositoryContracts;
 using System.Linq.Expressions;
@@ -9,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Repositories
 {
- public class PersonsRepository : IPersonsRepository
+    public class PersonsRepository : IPersonsRepository
  {
   private readonly ApplicationDbContext _db;
   private readonly ILogger<PersonsRepository> _logger;
