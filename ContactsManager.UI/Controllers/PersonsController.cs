@@ -30,7 +30,10 @@ namespace CRUDExample.Controllers
   private readonly ILogger<PersonsController> _logger;
 
   //constructor
-  public PersonsController(IPersonsGetterService personsGetterService, IPersonsAdderService personsAdderService, IPersonsDeleterService personsDeleterService, IPersonsUpdaterService personsUpdaterService, IPersonsSorterService personsSorterService, ICountriesGetterService countriesService, ILogger<PersonsController> logger)
+  public PersonsController(IPersonsGetterService personsGetterService,
+      IPersonsAdderService personsAdderService,
+      IPersonsDeleterService personsDeleterService, 
+      IPersonsUpdaterService personsUpdaterService, IPersonsSorterService personsSorterService, ICountriesGetterService countriesService, ILogger<PersonsController> logger)
   {
    _personsGetterService = personsGetterService;
    _personsAdderService = personsAdderService;

@@ -1,11 +1,4 @@
-using ServiceContracts;
-using Services;
-using Microsoft.EntityFrameworkCore;
-using Entities;
-using RepositoryContracts;
-using Repositories;
 using Serilog;
-using CRUDExample.Filters.ActionFilters;
 using CRUDExample;
 using CRUDExample.Middleware;
 
