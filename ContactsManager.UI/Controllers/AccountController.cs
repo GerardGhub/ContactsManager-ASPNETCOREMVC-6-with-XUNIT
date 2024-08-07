@@ -110,7 +110,7 @@ namespace ContactsManager.UI.Controllers
 
 
 
-        // Displays the login form
+        // Displays the login form solid
         [HttpGet]
         [Authorize("NotAuthorized")]  // Requires authentication using "NotAuthorized" policy
         public IActionResult Login()
